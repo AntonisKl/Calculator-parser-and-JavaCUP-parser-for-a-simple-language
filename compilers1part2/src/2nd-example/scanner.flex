@@ -1,6 +1,6 @@
 /* JFlex example: part of Java language lexer specification */
 import java_cup.runtime.*;
-/**
+
 %%
 /* -----------------Options and Declarations Section----------------- */
 
@@ -33,13 +33,13 @@ import java_cup.runtime.*;
 */
 
 %{
-StringBuffer stringBuffer = new StringBuffer();
-private Symbol symbol(int type) {
-   return new Symbol(type, yyline, yycolumn);
-}
-private Symbol symbol(int type, Object value) {
-    return new Symbol(type, yyline, yycolumn, value);
-}
+  StringBuffer stringBuffer = new StringBuffer();
+  private Symbol symbol(int type) {
+    return new Symbol(type, yyline, yycolumn);
+  }
+  private Symbol symbol(int type, Object value) {
+      return new Symbol(type, yyline, yycolumn, value);
+  }
 %}
 
 /*
@@ -57,21 +57,36 @@ LineTerminator = \r|\n|\r\n
 /* White space is a line terminator, space, tab, or line feed. */
 WhiteSpace     = {LineTerminator} | [ \t\f]
 
+Identifier = [a-zA-Z_][a-zA-Z0-9_]*
+
+If = if
+Else = else
+Suffix = suffix
+Prefix = prefix
+
 %state STRING
 
 %%
 /* ------------------------Lexical Rules Section---------------------- */
 
 <YYINITIAL> {
-/* operators */
- "+"            { return symbol(sym.PLUS); }
- "-"            { return symbol(sym.MINUS); }
- "*"            { return symbol(sym.TIMES); }
- "("            { return symbol(sym.LPAREN); }
- ")"            { return symbol(sym.RPAREN); }
- ";"            { return symbol(sym.SEMI); }
- \"             { stringBuffer.setLength(0); yybegin(STRING); }
- {WhiteSpace}   { /* just skip what was found, do nothing */ }
+  {If}           { return symbol(sym.IF); }
+  {Else}         { return symbol(sym.ELSE); }
+  {Suffix}       { return symbol(sym.SUFFIX); }
+  {Prefix}       { return symbol(sym.PREFIX); }
+  {Identifier}   { return symbol(sym.IDENTIFIER); }
+  /* operators */
+  "+"            { return symbol(sym.PLUS); }
+  //  "-"            { return symbol(sym.MINUS); }
+  //  "*"            { return symbol(sym.TIMES); }
+  "("            { return symbol(sym.LPAREN); }
+  ")"            { return symbol(sym.RPAREN); }
+  "{"            { return symbol(sym.LBRACE); }
+  "}"            { return symbol(sym.RBRACE); }
+  ","            { return symbol(sym.COMMA);  }
+  //  ";"            { return symbol(sym.SEMI); }
+  \"             { stringBuffer.setLength(0); yybegin(STRING); }
+  {WhiteSpace}   { /* just skip what was found, do nothing */ }
 }
 
 <STRING> {
