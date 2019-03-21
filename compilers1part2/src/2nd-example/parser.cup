@@ -3,32 +3,33 @@
  *  Package and Import Specifications
  */
 import java_cup.runtime.*;
-// import java.lang.reflect.InvocationTargetException;
-// import java.lang.reflect.Method;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  *  Usercode Components
  */
-
 action code {:
-    // My methods
-    // public String callMethodByName(String name, String obj, String arg) {
-    //     java.lang.reflect.Method method;
+    void writeToFile(String text) {
+        try {
+            FileWriter fileWriter = new FileWriter("output/Main.java", false);
+            fileWriter.write(text);
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-    //     try {
-    //         method = obj.getClass().getMethod(name, arg.getClass());
-    //     } catch (SecurityException e) { e.printStackTrace(); }
-    //     catch (NoSuchMethodException e) { e.printStackTrace(); }
+    String buildMainClass(String contents) {
+        return "public class Main {\n" + contents + "}";
+    }
 
-    //     try {
-    //         return (String) method.invoke(obj, arg);
-    //     } catch (IllegalArgumentException e) {  e.printStackTrace(); }
-    //     catch (IllegalAccessException e) {  e.printStackTrace(); }
-    //     catch (InvocationTargetException e) {  e.printStackTrace(); }
-    // }
+    String buildMainFunction(String contents) {
+        return "\tpublic static void main(String[] args) {\n" + contents + "\t}\n";
+    }
 
     String buildStatement(String s) {
-        return s + ";\n";
+        return "\t\t" + s + ";\n";
     }
 
     String buildStringConstant(String s) {
@@ -43,8 +44,8 @@ action code {:
         return firstParam + ", " + moreParams;
     }
 
-    String buildFunctionDeclaration(String functionStart, String params, String statement) {
-        return "public static String " + functionStart + params + ") {\n\treturn " + statement + ";\n}\n\n";
+    String buildFunctionDeclaration(String functionStart, String statement) {
+        return "\tpublic static String " + functionStart + "\n\t\treturn " + statement + ";\n\t}\n\n";
     }
 
     String buildFunctionCall(String functionStart, String params) {
@@ -71,7 +72,7 @@ scan with {: return s.next_token(); :};
 
 /* Terminals (tokens returned by the scanner). */
 terminal            PLUS, LPAREN, RPAREN, LBRACE, RBRACE, IF_START, ELSE, SUFFIX, PREFIX, COMMA, TRIPLE_LINE_TERMINATOR;
-terminal String     STRING_LITERAL, IDENTIFIER, FUNCTION_START;
+terminal String     STRING_LITERAL, IDENTIFIER, FUNCTION_START, FUNCTION_DECLARATION_START;
 
 /*  Non terminals */
 non terminal String functions, statement, builtin_functions, declarations, statements, params, param, ifelse, concatenation,
@@ -91,18 +92,14 @@ precedence left PLUS;
  *  The Grammar Rules
  */
 
-expr_list ::= declarations:decl TRIPLE_LINE_TERMINATOR statements:s  {: String result = decl + s; System.out.println(result); RESULT = result; :}
+expr_list ::= declarations:decl statements:s  {: String result = buildMainClass(decl + buildMainFunction(s));
+                                                 writeToFile(result);
+                                                 System.out.println(result); RESULT = result; :}
 ;
-declarations ::= FUNCTION_START:functionStart params:p RPAREN LBRACE statement:s RBRACE declarations:decl     {: RESULT = buildFunctionDeclaration(functionStart, p, s) + decl; :}
+declarations ::= FUNCTION_DECLARATION_START:functionStart statement:s RBRACE declarations:decl     {: RESULT = buildFunctionDeclaration(functionStart, s) + decl; :}
                 |                                                                                              {: RESULT = ""; :}
                 ;
-params ::= param:p                           {: RESULT = p; :}
-          | /* empty */                      {: RESULT = ""; :}
-          ;
-param ::= IDENTIFIER:id COMMA param:p        {: RESULT = buildParams(id, p); :}
-          | IDENTIFIER:id                    {: RESULT = id; :}
-          ;
-statements ::= function_call:s statements:moreS                 {: RESULT = buildStatement(s) + moreS; :}
+statements ::= function_call:s statements:moreS             {: RESULT = buildStatement(s) + moreS; :}
               | /* empty */                                 {: RESULT = ""; :}
               ;
 statement ::= ifelse:ifElse                         {: RESULT = ifElse; :}

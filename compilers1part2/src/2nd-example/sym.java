@@ -7,6 +7,7 @@
 public interface sym {
   /* terminals */
   public static final int LBRACE = 5;
+  public static final int FUNCTION_DECLARATION_START = 16;
   public static final int STRING_LITERAL = 13;
   public static final int PREFIX = 10;
   public static final int EOF = 0;
@@ -38,7 +39,8 @@ public interface sym {
   "TRIPLE_LINE_TERMINATOR",
   "STRING_LITERAL",
   "IDENTIFIER",
-  "FUNCTION_START"
+  "FUNCTION_START",
+  "FUNCTION_DECLARATION_START"
   };
 }
 
