@@ -11,13 +11,13 @@ public interface sym {
   public static final int PREFIX = 10;
   public static final int EOF = 0;
   public static final int PLUS = 2;
-  public static final int IF = 7;
   public static final int ELSE = 8;
-  public static final int LINE_TERMINATOR = 12;
   public static final int COMMA = 11;
   public static final int error = 1;
   public static final int RPAREN = 4;
   public static final int IDENTIFIER = 14;
+  public static final int IF_START = 7;
+  public static final int TRIPLE_LINE_TERMINATOR = 12;
   public static final int SUFFIX = 9;
   public static final int FUNCTION_START = 15;
   public static final int LPAREN = 3;
@@ -30,12 +30,12 @@ public interface sym {
   "RPAREN",
   "LBRACE",
   "RBRACE",
-  "IF",
+  "IF_START",
   "ELSE",
   "SUFFIX",
   "PREFIX",
   "COMMA",
-  "LINE_TERMINATOR",
+  "TRIPLE_LINE_TERMINATOR",
   "STRING_LITERAL",
   "IDENTIFIER",
   "FUNCTION_START"

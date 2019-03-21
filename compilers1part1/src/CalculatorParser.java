@@ -61,17 +61,17 @@ public class CalculatorParser {
         tempLookaheadToken1 = factor();
         tempLookaheadToken2 = and();
 
-        System.out.println("exp2: token1->" + charToInt(tempLookaheadToken1) + ", token2->" + tempLookaheadToken2);
+        System.out.println("exp2: token1->" + tempLookaheadToken1 + ", token2->" + tempLookaheadToken2);
 
         if (tempLookaheadToken2 == -1)
-            return charToInt(tempLookaheadToken1);
+            return tempLookaheadToken1;
 
         if (tempLookaheadToken1 == -1)
             return tempLookaheadToken2;
 
-        System.out.println("wil calculate: token1->" + charToInt(tempLookaheadToken1) + ", token2->" + tempLookaheadToken2);
+        System.out.println("will calculate: token1->" + tempLookaheadToken1 + ", token2->" + tempLookaheadToken2);
 
-        return charToInt(tempLookaheadToken1) & tempLookaheadToken2;
+        return tempLookaheadToken1 & tempLookaheadToken2;
     }
 
     private int and() throws ParseError, IOException {
@@ -89,7 +89,7 @@ public class CalculatorParser {
         if (tokenIsValidNumber()) {
             int tempLookaheadToken = lookaheadToken;
             consume(lookaheadToken);
-            return tempLookaheadToken;
+            return charToInt(tempLookaheadToken);
         }
 
         consume(lookaheadToken);

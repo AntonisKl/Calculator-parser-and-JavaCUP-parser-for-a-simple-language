@@ -65,10 +65,13 @@ LineTerminator = \r|\n|\r\n
 /* White space is a line terminator, space, tab, or line feed. */
 WhiteSpace     = {LineTerminator} | [ \t\f]
 
+TripleLineTerminator = {LineTerminator}{LineTerminator}{LineTerminator}
+
 Identifier = [a-zA-Z_][a-zA-Z0-9_]*
+
 FunctionStart = {Identifier}"("
 
-If = if
+IfStart = "if"{WhiteSpace}*"("*
 Else = else
 Suffix = suffix
 Prefix = prefix
@@ -79,13 +82,13 @@ Prefix = prefix
 /* ------------------------Lexical Rules Section---------------------- */
 
 <YYINITIAL> {
-  {If}           { return symbol(sym.IF); }
+  {IfStart}           { return symbol(sym.IF_START); }
   {Else}         { return symbol(sym.ELSE); }
   {Suffix}       { return symbol(sym.SUFFIX); }
   {Prefix}       { return symbol(sym.PREFIX); }
   {Identifier}   { return symbol(sym.IDENTIFIER, yytext()); }
   {FunctionStart} { return symbol(sym.FUNCTION_START, yytext()); }
-  {LineTerminator} { return symbol(sym.LINE_TERMINATOR); }
+  {TripleLineTerminator} { return symbol(sym.TRIPLE_LINE_TERMINATOR); }
   /* operators */
   "+"            { return symbol(sym.PLUS); }
   //  "-"            { return symbol(sym.MINUS); }

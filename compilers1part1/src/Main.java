@@ -2,7 +2,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        while (true) {
+        // while (true) {
             try {
                 CalculatorParser parser = new CalculatorParser(System.in);
                 parser.parse();
@@ -10,6 +10,6 @@ public class Main {
             } catch (IOException | ParseError e) {
                 System.err.println(e.getMessage());
             }
-        }
+        // }
     }
 }

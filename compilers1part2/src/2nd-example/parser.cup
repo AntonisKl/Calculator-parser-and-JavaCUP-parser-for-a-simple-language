@@ -26,6 +26,34 @@ action code {:
     //     catch (IllegalAccessException e) {  e.printStackTrace(); }
     //     catch (InvocationTargetException e) {  e.printStackTrace(); }
     // }
+
+    String buildStatement(String s) {
+        return s + ";\n";
+    }
+
+    String buildStringConstant(String s) {
+        return "\"" + s + "\"";
+    }
+
+    String buildConditional(String condition, String s1, String s2) {
+        return condition + " ? " + s1 + " : " + s2 + "";
+    }
+
+    String buildParams(String firstParam, String moreParams) {
+        return firstParam + ", " + moreParams;
+    }
+
+    String buildFunctionDeclaration(String functionStart, String params, String statement) {
+        return "public static String " + functionStart + params + ") {\n\treturn " + statement + ";\n}\n\n";
+    }
+
+    String buildFunctionCall(String functionStart, String params) {
+        return functionStart + params + ")";
+    }
+
+    String buildBuiltInFunctionCall(String s1, String functionName, String s2) {
+        return s1 + "." + functionName + "(" + s2 + ")";
+    }
 :};
 
 parser code {:
@@ -42,7 +70,7 @@ scan with {: return s.next_token(); :};
  */
 
 /* Terminals (tokens returned by the scanner). */
-terminal            PLUS, LPAREN, RPAREN, LBRACE, RBRACE, IF, ELSE, SUFFIX, PREFIX, COMMA, LINE_TERMINATOR;
+terminal            PLUS, LPAREN, RPAREN, LBRACE, RBRACE, IF_START, ELSE, SUFFIX, PREFIX, COMMA, TRIPLE_LINE_TERMINATOR;
 terminal String     STRING_LITERAL, IDENTIFIER, FUNCTION_START;
 
 /*  Non terminals */
@@ -55,7 +83,7 @@ non terminal String functions, statement, builtin_functions, declarations, state
  */
 // precedence left PLUS, MINUS;
 // precedence left TIMES;
-precedence left IF, ELSE;
+precedence left IF_START, ELSE;
 precedence left PREFIX, SUFFIX;
 precedence left PLUS;
 
@@ -63,43 +91,43 @@ precedence left PLUS;
  *  The Grammar Rules
  */
 
-expr_list ::= declarations:decl LINE_TERMINATOR statements:s  {: String result = decl + s; System.out.println(result); RESULT = result; :}
+expr_list ::= declarations:decl TRIPLE_LINE_TERMINATOR statements:s  {: String result = decl + s; System.out.println(result); RESULT = result; :}
 ;
-declarations ::= FUNCTION_START:functionStart params:p RPAREN LBRACE statements:s RBRACE declarations:decl     {: RESULT = functionStart + p + ") {\n" + s + "}\n\n" + decl; :}
+declarations ::= FUNCTION_START:functionStart params:p RPAREN LBRACE statement:s RBRACE declarations:decl     {: RESULT = buildFunctionDeclaration(functionStart, p, s) + decl; :}
                 |                                                                                              {: RESULT = ""; :}
                 ;
 params ::= param:p                           {: RESULT = p; :}
           | /* empty */                      {: RESULT = ""; :}
           ;
-param ::= IDENTIFIER:id COMMA param:p        {: RESULT = id + ", " + p; :}
+param ::= IDENTIFIER:id COMMA param:p        {: RESULT = buildParams(id, p); :}
           | IDENTIFIER:id                    {: RESULT = id; :}
           ;
-statements ::= statement:s statements:moreS                 {: RESULT = s + moreS; :}
-              | /* emtpy */                                 {: RESULT = ""; :}
+statements ::= function_call:s statements:moreS                 {: RESULT = buildStatement(s) + moreS; :}
+              | /* empty */                                 {: RESULT = ""; :}
               ;
-statement ::= ifelse:ifElse                         {: RESULT = ifElse + ";\n"; :}
-             | concatenation:concat                 {: RESULT = concat + ";\n"; :}
-             | function_call:function               {: RESULT = function + ";\n"; :}
-             | builtin_functions:builtInFunction    {: RESULT = builtInFunction + ";\n"; :}
-             | IDENTIFIER:id                        {: RESULT = id + ";\n"; :}
-             | STRING_LITERAL:s                     {: RESULT = "\"" + s + "\"" + ";\n"; :}
+statement ::= ifelse:ifElse                         {: RESULT = ifElse; :}
+             | concatenation:concat                 {: RESULT = concat; :}
+             | function_call:function               {: RESULT = function; :}
+            //  | builtin_functions:builtInFunction    {: RESULT = builtInFunction; :}
+             | IDENTIFIER:id                           {: RESULT = id; :}
+             | STRING_LITERAL:s                     {: RESULT = buildStringConstant(s); :}
              ;
-ifelse ::= IF statement:s1 ELSE statement:s2        {: RESULT = "if " +  s1 + " else " + s2; :}
+ifelse ::= IF_START builtin_functions:condition RPAREN statement:s1 ELSE statement:s2        {: RESULT = buildConditional(condition, s1, s2); :}
 ;
-concatenation ::= operand:o1 PLUS operand:o2 concatenation:concat {: RESULT = o1 + " + " + o2 + concat; :}
-;
-operand ::= IDENTIFIER:id                           {: RESULT = id; :}
-           | STRING_LITERAL:s                       {: RESULT = s; :}
-           ;
-function_call ::= FUNCTION_START:functionStart params_call:params RPAREN    {: RESULT = functionStart + params + ")"; :}
+concatenation ::= statement:s1 PLUS statement:s2 {: RESULT = s1 + " + " + s2; :}
+                ;
+// operand ::= IDENTIFIER:id                           {: RESULT = id; :}
+//            | STRING_LITERAL:s                       {: RESULT = s; :}
+//            ;
+function_call ::= FUNCTION_START:functionStart params_call:params RPAREN    {: RESULT = buildFunctionCall(functionStart, params); :}
 ;
 params_call ::= param_call:param                     {: RESULT = param; :}
                | /* empty */                         {: RESULT = ""; :}
                ;
-param_call ::= statement:s COMMA param_call:param              {: RESULT = s + ", " + param; :}
+param_call ::= statement:s COMMA param_call:param              {: RESULT = buildParams(s, param); :}
               | statement:s                                    {: RESULT = s; :}
               ;
-builtin_functions ::= statement:s1 functions:f statement:s2 {: RESULT = s1 + f + "(" + s2 + ");"; :}
+builtin_functions ::= statement:s1 functions:f statement:s2 {: RESULT = buildBuiltInFunctionCall(s1, f, s2); :}
 ;
 functions ::= SUFFIX        {: RESULT = "endsWith"; :}
              | PREFIX       {: RESULT = "startsWith"; :}
