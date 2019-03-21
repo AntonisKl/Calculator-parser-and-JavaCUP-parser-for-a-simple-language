@@ -40,6 +40,14 @@ import java_cup.runtime.*;
   private Symbol symbol(int type, Object value) {
       return new Symbol(type, yyline, yycolumn, value);
   }
+
+  // private String deleteLastCharFromString (String str)
+  // {
+  //   if (str != null && str.length() > 0 && str.charAt(str.length() - 1) == 'x') {
+  //       str = str.substring(0, str.length() - 1);
+  //   }
+  //   return str;
+  // }
 %}
 
 /*
@@ -58,6 +66,7 @@ LineTerminator = \r|\n|\r\n
 WhiteSpace     = {LineTerminator} | [ \t\f]
 
 Identifier = [a-zA-Z_][a-zA-Z0-9_]*
+FunctionStart = {Identifier}"("
 
 If = if
 Else = else
@@ -74,7 +83,9 @@ Prefix = prefix
   {Else}         { return symbol(sym.ELSE); }
   {Suffix}       { return symbol(sym.SUFFIX); }
   {Prefix}       { return symbol(sym.PREFIX); }
-  {Identifier}   { return symbol(sym.IDENTIFIER); }
+  {Identifier}   { return symbol(sym.IDENTIFIER, yytext()); }
+  {FunctionStart} { return symbol(sym.FUNCTION_START, yytext()); }
+  {LineTerminator} { return symbol(sym.LINE_TERMINATOR); }
   /* operators */
   "+"            { return symbol(sym.PLUS); }
   //  "-"            { return symbol(sym.MINUS); }

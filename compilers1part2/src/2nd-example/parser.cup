@@ -3,15 +3,36 @@
  *  Package and Import Specifications
  */
 import java_cup.runtime.*;
+// import java.lang.reflect.InvocationTargetException;
+// import java.lang.reflect.Method;
 
 /**
  *  Usercode Components
  */
+
+action code {:
+    // My methods
+    // public String callMethodByName(String name, String obj, String arg) {
+    //     java.lang.reflect.Method method;
+
+    //     try {
+    //         method = obj.getClass().getMethod(name, arg.getClass());
+    //     } catch (SecurityException e) { e.printStackTrace(); }
+    //     catch (NoSuchMethodException e) { e.printStackTrace(); }
+
+    //     try {
+    //         return (String) method.invoke(obj, arg);
+    //     } catch (IllegalArgumentException e) {  e.printStackTrace(); }
+    //     catch (IllegalAccessException e) {  e.printStackTrace(); }
+    //     catch (InvocationTargetException e) {  e.printStackTrace(); }
+    // }
+:};
+
 parser code {:
     // Connect this parser to a scanner!
     Scanner s;
     Parser(Scanner s){ this.s=s; }
-:}
+:};
 
 /* define how to connect to the scanner! */
 scan with {: return s.next_token(); :};
@@ -21,28 +42,77 @@ scan with {: return s.next_token(); :};
  */
 
 /* Terminals (tokens returned by the scanner). */
-terminal            SEMI, PLUS, MINUS, TIMES, LPAREN, RPAREN;
-terminal String     STRING_LITERAL;        // our scanner provides numbers as strings
+terminal            PLUS, LPAREN, RPAREN, LBRACE, RBRACE, IF, ELSE, SUFFIX, PREFIX, COMMA, LINE_TERMINATOR;
+terminal String     STRING_LITERAL, IDENTIFIER, FUNCTION_START;
 
 /*  Non terminals */
-non terminal            expr_list;
-non terminal Integer    expr;      // used to store evaluated subexpressions
+non terminal String functions, statement, builtin_functions, declarations, statements, params, param, ifelse, concatenation,
+                        function_call, operand, params_call, param_call, expr_list;
+// non terminal Integer    expr;      // used to store evaluated subexpressions
 
 /**
  *  Precedence Declarations
  */
-precedence left PLUS, MINUS;
-precedence left TIMES;
+// precedence left PLUS, MINUS;
+// precedence left TIMES;
+precedence left IF, ELSE;
+precedence left PREFIX, SUFFIX;
+precedence left PLUS;
 
 /**
  *  The Grammar Rules
  */
-expr_list ::= expr_list expr:e SEMI         {: System.out.println(e);         :}
-            | expr:e SEMI                   {: System.out.println(e);         :}
+
+expr_list ::= declarations:decl LINE_TERMINATOR statements:s  {: String result = decl + s; System.out.println(result); RESULT = result; :}
 ;
-expr      ::= expr:e1 PLUS  expr:e2         {: RESULT = e1+e2;                :}
-             | expr:e1 MINUS expr:e2        {: RESULT = e1-e2;                :}
-             | expr:e1 TIMES expr:e2        {: RESULT = e1*e2;                :}
-             | LPAREN expr:e RPAREN	        {: RESULT = e;                    :}
-             | STRING_LITERAL:s	            {: RESULT = Integer.parseInt(s);  :}
+declarations ::= FUNCTION_START:functionStart params:p RPAREN LBRACE statements:s RBRACE declarations:decl     {: RESULT = functionStart + p + ") {\n" + s + "}\n\n" + decl; :}
+                |                                                                                              {: RESULT = ""; :}
+                ;
+params ::= param:p                           {: RESULT = p; :}
+          | /* empty */                      {: RESULT = ""; :}
+          ;
+param ::= IDENTIFIER:id COMMA param:p        {: RESULT = id + ", " + p; :}
+          | IDENTIFIER:id                    {: RESULT = id; :}
+          ;
+statements ::= statement:s statements:moreS                 {: RESULT = s + moreS; :}
+              | /* emtpy */                                 {: RESULT = ""; :}
+              ;
+statement ::= ifelse:ifElse                         {: RESULT = ifElse + ";\n"; :}
+             | concatenation:concat                 {: RESULT = concat + ";\n"; :}
+             | function_call:function               {: RESULT = function + ";\n"; :}
+             | builtin_functions:builtInFunction    {: RESULT = builtInFunction + ";\n"; :}
+             | IDENTIFIER:id                        {: RESULT = id + ";\n"; :}
+             | STRING_LITERAL:s                     {: RESULT = "\"" + s + "\"" + ";\n"; :}
              ;
+ifelse ::= IF statement:s1 ELSE statement:s2        {: RESULT = "if " +  s1 + " else " + s2; :}
+;
+concatenation ::= operand:o1 PLUS operand:o2 concatenation:concat {: RESULT = o1 + " + " + o2 + concat; :}
+;
+operand ::= IDENTIFIER:id                           {: RESULT = id; :}
+           | STRING_LITERAL:s                       {: RESULT = s; :}
+           ;
+function_call ::= FUNCTION_START:functionStart params_call:params RPAREN    {: RESULT = functionStart + params + ")"; :}
+;
+params_call ::= param_call:param                     {: RESULT = param; :}
+               | /* empty */                         {: RESULT = ""; :}
+               ;
+param_call ::= statement:s COMMA param_call:param              {: RESULT = s + ", " + param; :}
+              | statement:s                                    {: RESULT = s; :}
+              ;
+builtin_functions ::= statement:s1 functions:f statement:s2 {: RESULT = s1 + f + "(" + s2 + ");"; :}
+;
+functions ::= SUFFIX        {: RESULT = "endsWith"; :}
+             | PREFIX       {: RESULT = "startsWith"; :}
+             ;
+
+// old
+
+// expr_list ::= expr_list expr:e SEMI         {: System.out.println(e);         :}
+//             | expr:e SEMI                   {: System.out.println(e);         :}
+// ;
+// expr      ::= expr:e1 PLUS  expr:e2         {: RESULT = e1+e2;                :}
+//              | expr:e1 MINUS expr:e2        {: RESULT = e1-e2;                :}
+//              | expr:e1 TIMES expr:e2        {: RESULT = e1*e2;                :}
+//              | LPAREN expr:e RPAREN	        {: RESULT = e;                    :}
+//              | STRING_LITERAL:s	            {: RESULT = Integer.parseInt(s);  :}
+//              ;
