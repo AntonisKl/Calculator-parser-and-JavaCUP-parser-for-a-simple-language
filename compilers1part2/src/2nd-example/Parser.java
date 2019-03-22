@@ -177,7 +177,7 @@ class CUP$Parser$actions {
     }
 
     String buildStatement(String s) {
-        return "\t\t" + s + ";\n";
+        return "\t\tSystem.out.println(" + s + ");\n";
     }
 
     String buildStringConstant(String s) {

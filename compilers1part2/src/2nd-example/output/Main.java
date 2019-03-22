@@ -1,5 +1,5 @@
 public class Main {
-	public static String name()  {
+	public static String name() {
 		return "John";
 	}
 
@@ -7,13 +7,13 @@ public class Main {
 		return "Doe";
 	}
 
-	public static String fullname(first_name, sep, last_name) {
+	public static String fullname(String first_name, String  sep, String  last_name) {
 		return first_name + sep + last_name;
 	}
 
 	public static void main(String[] args) {
-		name();
-		surname();
-		fullname(name(), " ", surname());
+		System.out.println(name());
+		System.out.println(surname());
+		System.out.println(fullname(name(), " ", surname()));
 	}
 }

@@ -6,7 +6,6 @@ public class Main {
             try {
                 CalculatorParser parser = new CalculatorParser(System.in);
                 parser.parse();
-
             } catch (IOException | ParseError e) {
                 System.err.println(e.getMessage());
             }

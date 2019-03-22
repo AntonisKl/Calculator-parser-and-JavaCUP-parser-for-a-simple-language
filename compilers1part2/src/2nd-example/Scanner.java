@@ -273,6 +273,25 @@ class Scanner implements java_cup.runtime.Scanner {
       return new Symbol(type, yyline, yycolumn, value);
   }
 
+  private String handleParams(String functionDeclStart) { // format: functionName(param1, param2, ...) {
+    String[] tokens = functionDeclStart.split("[()]"); // 0: name, 1: params, 2: {
+    String[] params = tokens[1].split(",");
+    System.out.println(tokens[0]);
+    String returnValue = tokens[0] + "(";
+    for (int i = 0; i < params.length; i++) {
+      if (params[i].length() == 0)
+        continue;
+
+      if (i != 0) {
+        returnValue += ", ";
+      }
+      returnValue += "String " + params[i];
+    }
+    returnValue += ") {";
+
+    return returnValue;
+  }
+
   // private String deleteLastCharFromString (String str)
   // {
   //   if (str != null && str.length() > 0 && str.charAt(str.length() - 1) == 'x') {
@@ -743,7 +762,7 @@ class Scanner implements java_cup.runtime.Scanner {
             }
           case 42: break;
           case 20: 
-            { return symbol(sym.FUNCTION_DECLARATION_START, yytext());
+            { return symbol(sym.FUNCTION_DECLARATION_START, handleParams(yytext()));
             }
           case 43: break;
           case 21: 

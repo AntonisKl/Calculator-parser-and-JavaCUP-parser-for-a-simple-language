@@ -33,11 +33,7 @@ public class CalculatorParser {
         int tempLookaheadToken1, tempLookaheadToken2;
 
         tempLookaheadToken1 = exp2();
-//        System.out.println("token 1: " + tempLookaheadToken1);
         tempLookaheadToken2 = xor();
-        System.out.println("token 1: " + tempLookaheadToken1);
-
-        System.out.println("token 2: " + tempLookaheadToken2);
 
         if (tempLookaheadToken2 == -1)
             return tempLookaheadToken1;
@@ -61,15 +57,11 @@ public class CalculatorParser {
         tempLookaheadToken1 = factor();
         tempLookaheadToken2 = and();
 
-        System.out.println("exp2: token1->" + tempLookaheadToken1 + ", token2->" + tempLookaheadToken2);
-
         if (tempLookaheadToken2 == -1)
             return tempLookaheadToken1;
 
         if (tempLookaheadToken1 == -1)
             return tempLookaheadToken2;
-
-        System.out.println("will calculate: token1->" + tempLookaheadToken1 + ", token2->" + tempLookaheadToken2);
 
         return tempLookaheadToken1 & tempLookaheadToken2;
     }
@@ -96,6 +88,7 @@ public class CalculatorParser {
 
         // token is definitely '('
         int tempResult = exp();
+
         consume(')');
 
         return tempResult;
@@ -106,6 +99,6 @@ public class CalculatorParser {
         if (lookaheadToken != '\n' && lookaheadToken != -1)
             throw new ParseError();
 
-        System.out.println("Result: " + result);
+        System.out.println("\nResult: " + result);
     }
 }
