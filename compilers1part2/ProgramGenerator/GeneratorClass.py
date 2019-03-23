@@ -6,7 +6,7 @@ class Generator:
     def __init__(self, declarationsNum, expressionsNum, outputFileName):
         self.declarationsNum = declarationsNum
         self.expressionsNum = expressionsNum
-        self.stringLiterals = ["\"John\"", "\"Doe\"", "\"Maria\"", "\"Yolo\""]
+        self.stringLiterals = ["\"John\"", "\"Doe\"", "\"Maria\"", "\"Yolo\"", "\"Karayolo\"", "\"shit\"", "\"shittyshit\"", "\"holyshit\"", "\"ultrashit\""]
         self.builtInFunctions = ["suffix", "prefix"]
         self.ids = ["var1", "var2", "var3", "var4", "var5"]
         self.functionNames = []

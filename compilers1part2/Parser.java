@@ -201,7 +201,7 @@ class CUP$Parser$actions {
     }
 
     String buildBuiltInFunctionCall(String s1, String functionName, String s2) {
-        return s1 + "." + functionName + "(" + s2 + ")";
+        return s2 + "." + functionName + "(" + s1 + ")";
     }
 
   private final Parser parser;

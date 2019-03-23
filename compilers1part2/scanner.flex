@@ -44,7 +44,7 @@ import java_cup.runtime.*;
   private String handleParams(String functionDeclStart) { // format: functionName(param1, param2, ...) {
     String[] tokens = functionDeclStart.split("[()]"); // 0: name, 1: params, 2: {
     String[] params = tokens[1].split(",");
-    System.out.println(tokens[0]);
+    
     String returnValue = tokens[0] + "(";
     for (int i = 0; i < params.length; i++) {
       if (params[i].length() == 0)

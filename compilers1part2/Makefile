@@ -8,5 +8,9 @@ compile:
 execute:
 	java -cp ../java-cup-11b-runtime.jar:. Main
 
+verify:
+	javac output/Main.java
+	java -classpath output Main
+
 clean:
 	rm -f *.class *~
