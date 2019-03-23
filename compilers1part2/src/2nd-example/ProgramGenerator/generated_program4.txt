@@ -1,0 +1,143 @@
+function0(var1, var2, var3, var4, var5) {
+		if ("Doe" prefix "Doe")
+	"Maria"
+else
+	"Yolo"
+}
+
+function1(var1, var2, var3, var4, var5) {
+		var3
+}
+
+function2(var1, var2, var3, var4, var5) {
+		"Maria"
+}
+
+function3(var1, var2, var3, var4, var5) {
+		"Yolo"
+}
+
+function2(
+	"Doe"
+, 	"Yolo"
+, 	if ("Yolo" prefix "Doe")
+	"John"
+else
+	if ("Doe" suffix "John")
+	if ("Maria" prefix "Yolo")
+	"Doe" + "Doe" + "John"
+else
+	if ("Yolo" prefix "Doe")
+	"John" + "John"
+else
+	"Maria" + "Maria"
+else
+	if ("John" prefix "Yolo")
+	"Maria"
+else
+	if ("Doe" suffix "Doe")
+	if ("Doe" suffix "Doe")
+	"John"
+else
+	"Maria" + "Maria"
+else
+	"John"
+, 	if ("Yolo" suffix "Doe")
+	"Doe"
+else
+	"John"
+, 	"John" + "John"
+)
+function0(
+	"Maria"
+, 	if ("Doe" suffix "Doe")
+	"Maria"
+else
+	"John"
+, 	"Doe" + "Doe"
+, 	"Yolo"
+, 	"Yolo"
+)
+function1(
+	if ("John" prefix "Doe")
+	"Maria"
+else
+	if ("Maria" prefix "Doe")
+	if ("Doe" prefix "Maria")
+	"Doe"
+else
+	"Doe" + "John" + "Maria"
+else
+	"Yolo"
+, 	if ("Maria" suffix "Doe")
+	"Yolo" + "John"
+else
+	if ("Yolo" suffix "Doe")
+	if ("Yolo" prefix "Yolo")
+	"Yolo"
+else
+	if ("Doe" suffix "Doe")
+	"Yolo"
+else
+	"Doe"
+else
+	"Doe" + "John" + "Maria"
+, 	if ("Doe" suffix "Maria")
+	"Yolo" + "Yolo"
+else
+	"Yolo"
+, 	if ("Doe" prefix "Maria")
+	if ("Yolo" prefix "John")
+	"Maria"
+else
+	if ("Maria" prefix "Yolo")
+	if ("John" prefix "Maria")
+	"Maria"
+else
+	"John"
+else
+	"John"
+else
+	"Maria" + "Maria" + "Maria"
+, 	"Doe"
+)
+function1(
+	if ("Maria" prefix "John")
+	if ("Maria" prefix "Doe")
+	"Doe" + "John"
+else
+	if ("Maria" prefix "Yolo")
+	"Yolo" + "John"
+else
+	if ("Yolo" prefix "Yolo")
+	if ("Doe" prefix "Yolo")
+	"John" + "John"
+else
+	if ("John" suffix "John")
+	"Doe"
+else
+	"Maria"
+else
+	"Doe"
+else
+	"Yolo" + "Doe" + "Yolo"
+, 	if ("Yolo" prefix "John")
+	"Yolo"
+else
+	if ("Maria" prefix "John")
+	if ("Doe" suffix "Doe")
+	"John"
+else
+	"Maria"
+else
+	"Yolo"
+, 	if ("Maria" prefix "Maria")
+	if ("Yolo" prefix "Maria")
+	"Yolo" + "John"
+else
+	"Yolo" + "Yolo" + "Yolo"
+else
+	"John"
+, 	"Doe"
+, 	"Yolo"
+)

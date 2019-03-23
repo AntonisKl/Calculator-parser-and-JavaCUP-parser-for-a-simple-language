@@ -1,0 +1,117 @@
+function0(var1, var2, var3, var4, var5) {
+		if (var4 prefix var5)
+	"Yolo" + "Yolo"
+else
+	var3 + var3
+}
+
+function1(var1, var2, var3, var4, var5) {
+		if (var4 prefix var1)
+	var4 + "Yolo" + var3
+else
+	var2
+}
+
+function2(var1, var2, var3, var4, var5) {
+		"Doe" + var4 + "Yolo"
+}
+
+function2(
+	if ("Yolo" prefix "John")
+	if ("Doe" suffix "Yolo")
+	if ("John" prefix "Doe")
+	"John"
+else
+	"Doe"
+else
+	"Doe"
+else
+	if ("Doe" suffix "Doe")
+	"John"
+else
+	"John" + "Doe"
+, 	if ("John" suffix "Doe")
+	if ("Doe" prefix "Yolo")
+	"Yolo"
+else
+	"Doe" + "Yolo"
+else
+	if ("Yolo" prefix "Doe")
+	"Yolo"
+else
+	"Doe"
+, 	"Yolo"
+, 	if ("John" suffix "Yolo")
+	"John" + "Yolo"
+else
+	"Yolo"
+, 	"Maria" + "Maria" + "Maria"
+)
+function2(
+	"John" + "Yolo"
+, 	if ("John" prefix "John")
+	if ("Maria" prefix "Maria")
+	if ("John" prefix "Maria")
+	if ("John" prefix "John")
+	"Doe" + "Yolo"
+else
+	if ("Doe" prefix "Maria")
+	"Doe"
+else
+	"Yolo"
+else
+	"Maria"
+else
+	if ("John" prefix "Maria")
+	"John"
+else
+	if ("Maria" prefix "Yolo")
+	"Maria"
+else
+	if ("John" prefix "John")
+	"Maria"
+else
+	"Doe"
+else
+	if ("Doe" prefix "Maria")
+	"John"
+else
+	"Yolo"
+, 	"John"
+, 	"John" + "Yolo" + "Doe"
+, 	if ("Maria" prefix "Maria")
+	"Doe" + "John" + "Maria"
+else
+	"John"
+)
+function1(
+	if ("Doe" suffix "Maria")
+	"Maria"
+else
+	"Yolo"
+, 	if ("Maria" prefix "Doe")
+	if ("Yolo" suffix "Yolo")
+	"Doe"
+else
+	"John"
+else
+	"Maria"
+, 	"John" + "Maria"
+, 	if ("Maria" prefix "Doe")
+	"Maria" + "Maria"
+else
+	if ("Maria" prefix "Doe")
+	if ("Doe" prefix "Yolo")
+	"Yolo"
+else
+	"Doe"
+else
+	"Yolo" + "Maria" + "Maria"
+, 	if ("Doe" suffix "Maria")
+	"Maria" + "Maria"
+else
+	if ("Maria" prefix "John")
+	"John"
+else
+	"Maria" + "Yolo" + "Yolo"
+)
