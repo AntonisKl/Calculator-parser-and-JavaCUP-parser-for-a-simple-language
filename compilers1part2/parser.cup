@@ -5,6 +5,7 @@
 import java_cup.runtime.*;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
 
 /**
  *  Usercode Components
@@ -54,6 +55,17 @@ action code {:
 
     String buildBuiltInFunctionCall(String s1, String functionName, String s2) {
         return s2 + "." + functionName + "(" + s1 + ")";
+    }
+
+    String checkIdentifier(String id) throws ParseException {
+        try {
+        if (id.equals("if") || id.equals("else") || id.equals("suffix") || id.equals("prefix"))
+            throw new ParseException("Identifier \"" + id + "\" is a keyword", 0);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return id;
     }
 :};
 
@@ -106,7 +118,7 @@ statement ::= ifelse:ifElse                         {: RESULT = ifElse; :}
              | concatenation:concat                 {: RESULT = concat; :}
              | function_call:function               {: RESULT = function; :}
             //  | builtin_functions:builtInFunction    {: RESULT = builtInFunction; :}
-             | IDENTIFIER:id                           {: RESULT = id; :}
+             | IDENTIFIER:id                           {: RESULT = checkIdentifier(id); :}
              | STRING_LITERAL:s                     {: RESULT = buildStringConstant(s); :}
              ;
 ifelse ::= IF_START builtin_functions:condition RPAREN statement:s1 ELSE statement:s2        {: RESULT = buildConditional(condition, s1, s2); :}

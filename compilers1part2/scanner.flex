@@ -90,7 +90,7 @@ FunctionStart = {Identifier}"("
 
 FunctionDeclarationStart = {FunctionStart}{WhiteSpace}*({Identifier}{WhiteSpace}*)?(","{WhiteSpace}*{Identifier}{WhiteSpace}*)*")"{WhiteSpace}*"{"
 
-IfStart = "if"{WhiteSpace}*"("*
+IfStart = "if"{WhiteSpace}*"("
 Else = else
 Suffix = suffix
 Prefix = prefix

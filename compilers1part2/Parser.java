@@ -6,6 +6,7 @@
 import java_cup.runtime.*;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -204,6 +205,17 @@ class CUP$Parser$actions {
         return s2 + "." + functionName + "(" + s1 + ")";
     }
 
+    String checkIdentifier(String id) throws ParseException {
+        try {
+        if (id.equals("if") || id.equals("else") || id.equals("suffix") || id.equals("prefix"))
+            throw new ParseException("Identifier \"" + id + "\" is a keyword", 0);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return id;
+    }
+
   private final Parser parser;
 
   /** Constructor */
@@ -350,7 +362,7 @@ class CUP$Parser$actions {
 		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		String id = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = id; 
+		 RESULT = checkIdentifier(id); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("statement",1, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
