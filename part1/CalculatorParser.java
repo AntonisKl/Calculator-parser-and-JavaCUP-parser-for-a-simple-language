@@ -86,7 +86,8 @@ public class CalculatorParser {
 
         consume(lookaheadToken);
 
-        // token is definitely '('
+        // token is definitely '(' at this point
+        
         int tempResult = exp();
 
         consume(')');

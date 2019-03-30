@@ -1,0 +1,166 @@
+/**
+ *  Package and Import Specifications
+ */
+import java_cup.runtime.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.ParseException;
+
+/**
+ *  Usercode Components
+ */
+action code {:
+    void writeToFile(String text) {
+        try {
+            FileWriter fileWriter = new FileWriter("output/Main.java", false);
+            fileWriter.write(text);
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    String buildMainClass(String contents) {
+        return "public class Main {\n" + contents + "}";
+    }
+
+    String buildMainFunction(String contents) {
+        return "\tpublic static void main(String[] args) {\n" + contents + "\t}\n";
+    }
+
+    String buildExpression(String s) {
+        return "\t\tSystem.out.println(" + s + ");\n";
+    }
+
+    String buildStringConstant(String s) {
+        return "\"" + s + "\"";
+    }
+
+    String buildConditional(String condition, String exp1, String exp2) {
+        return condition + " ? " + exp1 + " : " + exp2 + "";
+    }
+
+    String buildParams(String firstParam, String moreParams) {
+        return firstParam + ", " + moreParams;
+    }
+
+    String buildFunctionDeclaration(String functionStart, String expression) {
+        return "\tpublic static String " + functionStart + "\n\t\treturn " + expression + ";\n\t}\n\n";
+    }
+
+    String buildFunctionCall(String functionStart, String params) {
+        return functionStart + params + ")";
+    }
+
+    String buildBuiltInFunctionCall(String exp1, String functionName, String exp2) {
+        return exp2 + "." + functionName + "(" + exp1 + ")";
+    }
+
+    // check if identifier is valid
+    String checkIdentifier(String id) throws ParseException {
+        if (id.equals("if") || id.equals("else") || id.equals("suffix") || id.equals("prefix"))
+            throw new ParseException("Identifier \"" + id + "\" is a keyword", 0);
+
+        return id;
+    }
+
+    // Converts declaration from format: "functionName(param1, param2, ...)" { to format "functionName(String param1, String param2, ...)"
+    String handleParams(String functionDeclStart) {
+        String[] tokens = functionDeclStart.split("[()]"); // 0: name, 1: params, 2: {
+        String[] params = tokens[1].split(",");
+        
+        String returnValue = tokens[0] + "(";
+        for (int i = 0; i < params.length; i++) {
+            if (params[i].length() == 0)
+                continue;
+            
+            try {
+                checkIdentifier(params[i]);
+            } catch(ParseException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+
+            if (i != 0) {
+                returnValue += ", ";
+            }
+            returnValue += "String " + params[i];
+        }
+        returnValue += ") {";
+
+        return returnValue;
+    }
+:};
+
+parser code {:
+    // Connect this parser to a scanner!
+    Scanner s;
+    Parser(Scanner s){ this.s=s; }
+:};
+
+/* define how to connect to the scanner! */
+scan with {: return s.next_token(); :};
+
+/**
+ *  Symbol Lists
+ */
+
+/* Terminals (tokens returned by the scanner). */
+terminal            PLUS, RPAREN, RBRACE, IF_START, ELSE, SUFFIX, PREFIX, COMMA;
+terminal String     STRING_LITERAL, IDENTIFIER, FUNCTION_START, FUNCTION_DECLARATION_START;
+
+/*  Non terminals */
+non terminal String functions, expression, builtin_functions, declarations, expressions, ifelse, concatenation, function_call, params_call, param_call;
+non terminal expr_list;
+
+/**
+ *  Precedence Declarations
+ */
+precedence left IF_START, ELSE;
+precedence left PREFIX, SUFFIX;
+precedence left PLUS;
+
+/**
+ *  The Grammar Rules
+ */
+
+expr_list ::= declarations:decl expressions:s  {: String result = buildMainClass(decl + buildMainFunction(s));
+                                                 writeToFile(result);
+                                                 System.out.println(result);
+                                               :}
+;
+declarations ::= FUNCTION_DECLARATION_START:functionStart expression:exp RBRACE declarations:decl     {: RESULT = buildFunctionDeclaration(handleParams(functionStart), exp) + decl; :}
+                | /* empty */                                                                         {: RESULT = ""; :}
+                ;
+expressions ::= function_call:s expressions:moreExp         {: RESULT = buildExpression(s) + moreExp; :}
+              | /* empty */                                 {: RESULT = ""; :}
+              ;
+expression ::= ifelse:ifElse                           {: RESULT = ifElse; :}
+             | concatenation:concat                    {: RESULT = concat; :}
+             | function_call:function                  {: RESULT = function; :}
+             | IDENTIFIER:id                           {: try {
+                                                            RESULT = checkIdentifier(id);
+                                                          } catch(ParseException e) {
+                                                            e.printStackTrace();
+                                                            System.exit(1);
+                                                          }
+                                                       :}
+             | STRING_LITERAL:s                     {: RESULT = buildStringConstant(s); :}
+             ;
+ifelse ::= IF_START builtin_functions:condition RPAREN expression:exp1 ELSE expression:exp2        {: RESULT = buildConditional(condition, exp1, exp2); :}
+;
+concatenation ::= expression:exp1 PLUS expression:exp2      {: RESULT = exp1 + " + " + exp2; :}
+                ;
+function_call ::= FUNCTION_START:functionStart params_call:params RPAREN    {: RESULT = buildFunctionCall(functionStart, params); :}
+;
+params_call ::= param_call:param                     {: RESULT = param; :}
+               | /* empty */                         {: RESULT = ""; :}
+               ;
+param_call ::= expression:exp COMMA param_call:param              {: RESULT = buildParams(exp, param); :}
+              | expression:exp                                    {: RESULT = exp; :}
+              ;
+builtin_functions ::= expression:exp1 functions:f expression:exp2 {: RESULT = buildBuiltInFunctionCall(exp1, f, exp2); :}
+;
+functions ::= SUFFIX        {: RESULT = "endsWith"; :}
+             | PREFIX       {: RESULT = "startsWith"; :}
+             ;

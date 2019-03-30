@@ -40,33 +40,6 @@ import java_cup.runtime.*;
   private Symbol symbol(int type, Object value) {
       return new Symbol(type, yyline, yycolumn, value);
   }
-
-  private String handleParams(String functionDeclStart) { // format: functionName(param1, param2, ...) {
-    String[] tokens = functionDeclStart.split("[()]"); // 0: name, 1: params, 2: {
-    String[] params = tokens[1].split(",");
-    
-    String returnValue = tokens[0] + "(";
-    for (int i = 0; i < params.length; i++) {
-      if (params[i].length() == 0)
-        continue;
-
-      if (i != 0) {
-        returnValue += ", ";
-      }
-      returnValue += "String " + params[i];
-    }
-    returnValue += ") {";
-
-    return returnValue;
-  }
-
-  // private String deleteLastCharFromString (String str)
-  // {
-  //   if (str != null && str.length() > 0 && str.charAt(str.length() - 1) == 'x') {
-  //       str = str.substring(0, str.length() - 1);
-  //   }
-  //   return str;
-  // }
 %}
 
 /*
@@ -88,12 +61,14 @@ Identifier = [a-zA-Z_][a-zA-Z0-9_]*
 
 FunctionStart = {Identifier}"("
 
+// FunctionDeclarationStart is a regular expression that matches a declaration in format "functionName(id1, id2, ...) {"
 FunctionDeclarationStart = {FunctionStart}{WhiteSpace}*({Identifier}{WhiteSpace}*)?(","{WhiteSpace}*{Identifier}{WhiteSpace}*)*")"{WhiteSpace}*"{"
 
+// IfStart is a regular expression that matches "if (" with indefinite number of spaces/line terminators in between
 IfStart = "if"{WhiteSpace}*"("
-Else = else
-Suffix = suffix
-Prefix = prefix
+Else = else // matches "else"
+Suffix = suffix // matches "suffix"
+Prefix = prefix // matches "prefix"
 
 %state STRING
 
@@ -101,23 +76,18 @@ Prefix = prefix
 /* ------------------------Lexical Rules Section---------------------- */
 
 <YYINITIAL> {
-  {IfStart}           { return symbol(sym.IF_START); }
+  {IfStart}      { return symbol(sym.IF_START); }
   {Else}         { return symbol(sym.ELSE); }
   {Suffix}       { return symbol(sym.SUFFIX); }
   {Prefix}       { return symbol(sym.PREFIX); }
   {Identifier}   { return symbol(sym.IDENTIFIER, yytext()); }
   {FunctionStart} { return symbol(sym.FUNCTION_START, yytext()); }
-  {FunctionDeclarationStart} { return symbol(sym.FUNCTION_DECLARATION_START, handleParams(yytext())); }
+  {FunctionDeclarationStart} { return symbol(sym.FUNCTION_DECLARATION_START, yytext()); } // token in format "functionName(id1, id2, ...) {"
   /* operators */
   "+"            { return symbol(sym.PLUS); }
-  //  "-"            { return symbol(sym.MINUS); }
-  //  "*"            { return symbol(sym.TIMES); }
-  "("            { return symbol(sym.LPAREN); }
   ")"            { return symbol(sym.RPAREN); }
-  "{"            { return symbol(sym.LBRACE); }
   "}"            { return symbol(sym.RBRACE); }
   ","            { return symbol(sym.COMMA);  }
-  //  ";"            { return symbol(sym.SEMI); }
   \"             { stringBuffer.setLength(0); yybegin(STRING); }
   {WhiteSpace}   { /* just skip what was found, do nothing */ }
 }
@@ -127,7 +97,7 @@ Prefix = prefix
                                        return symbol(sym.STRING_LITERAL, stringBuffer.toString()); }
       [^\n\r\"\\]+                   { stringBuffer.append( yytext() ); }
       \\t                            { stringBuffer.append('\t'); }
-      \\n                            { stringBuffer.append('\n'); }
+      \\n                            { stringBuffer.append("\\n"); } // append newline character as string
 
       \\r                            { stringBuffer.append('\r'); }
       \\\"                           { stringBuffer.append('\"'); }

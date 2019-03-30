@@ -1,6 +1,5 @@
 public class ParseError extends Exception {
-
     public String getMessage() {
-	return "Parse error";
+        return "Parse error";
     }
 }
