@@ -13,4 +13,4 @@ verify:
 	java -classpath output Main
 
 clean:
-	rm -f *.class *~
+	rm -f *.class *~ output/*
