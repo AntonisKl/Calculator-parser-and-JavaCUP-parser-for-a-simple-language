@@ -1,12 +1,12 @@
 |Commands|
 
-Part 1:
+Part 1 (Calculator parser):
     For compilation -> make
     For run -> make execute
     For run with input file -> make execute < input.txt
     For clean -> make clean
 
-Part 2:
+Part 2 (JavaCUP parser for a simple language):
     For compilation -> make
     For run -> make execute
     For run with input file -> make execute < input.txt
